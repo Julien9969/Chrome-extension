@@ -7,6 +7,7 @@ import  CheckLines from "../interfaces/check-line";
 const App = () => {
     const [text, setText] = useState('');
     const [errorMessages, setErrorMessages] = useState<string>('');
+    const [successMessages, setSuccessMessages] = useState<string>('');
     const [entryError, setEntryError] = useState(false);
     const [validCheckLines, setValidLines] = useState<CheckLines[]>([]);
     const [isCheckValid, setIsCheckValid] = useState(false);
@@ -33,6 +34,20 @@ const App = () => {
 
     const sendCheck = () => {
         console.log(validCheckLines);
+        // chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+        //     const tab = tabs[0];
+        //     if (tab.id === undefined) return;
+        //     console.log(tab.url)
+        //     chrome.tabs.sendMessage(tab.id, { action: 'fillCheck', payload: validCheckLines }, function(response) {
+        //         console.log("reponse : " + JSON.stringify(response))
+        //         if (response.success) {
+        //             setSuccessMessages(`Check entré avec succès`);
+        //         } else {
+        //             setEntryError(true);
+        //             setErrorMessages(`Erreur lors de l'entrée du check\n ${response.msg}`);
+        //         }
+        //     });
+        // });
     }
 
     const performCheck = () => {
@@ -52,20 +67,19 @@ const App = () => {
             const checkLine = InputChecker.createCheckInput(line);
             
             if (checkLine) {
-              console.log('ok');
-              newValidLines.push(checkLine);
+                newValidLines.push(checkLine);
             } else {
-              setEntryError(true);
-              setErrorMessages(`Erreur à la ligne ${index + 1}`);
-              console.log(`Erreur à la ligne ${index + 1}`);
-              break;
+                setEntryError(true);
+                setErrorMessages(`Erreur à la ligne ${index + 1}`);
+                console.log(`Erreur à la ligne ${index + 1}`);
+                break;
             }
         }
         if (entryError) return;
         
         setValidLines(newValidLines);
         setIsCheckValid(true);
-        console.log(newValidLines);
+        setSuccessMessages(`Check valide`);
     }
 
     const handleTextChange = (event: any) => {
@@ -81,9 +95,9 @@ const App = () => {
             </div>
             <div>
                 { entryError ? <p id="error-msg">{errorMessages}</p> : null }
-                { isCheckValid ? <p id="success-msg">Check valide</p> : null}
+                { isCheckValid ? <p id="success-msg">{successMessages}</p> : null}
             </div>
-            { isCheckValid ?
+            { !isCheckValid ?
                 <Button variant="contained" onClick={performCheck}>Véfier</Button>
                 : <Button variant="contained" onClick={sendCheck}>Convertir</Button> 
             }

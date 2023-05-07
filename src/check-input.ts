@@ -46,7 +46,7 @@ export default class InputChecker {
         console.log(splitInput);
 
         if (splitInput.length >= 2) {
-            const timing = this.splitTiming(splitInput[0]);
+            const timing = this.buildTiming(splitInput[0]);
             let category: number | null;
             if (!Number.isNaN(parseInt(splitInput[1].trim()))) {
                 category = this.checkCategoryN(parseInt(splitInput[1].trim()));
@@ -74,15 +74,6 @@ export default class InputChecker {
             }
         }
         return null;
-    }
-
-    private static splitTiming(timing: string): number[] {
-        let splitTiming = timing.split(':').map((num) => parseInt(num));
-        if (splitTiming.length < 2) {
-            splitTiming = timing.split('.').map((num) => parseInt(num));
-        }
-        console.log(splitTiming);
-        return splitTiming;
     }
 
     private static checkCategoryS(category: string): number | null {
@@ -119,6 +110,35 @@ export default class InputChecker {
             default:
                 return null;
         }
+    }
+
+    private static buildTiming(timing: string): string | null {
+
+        const checkTimingCallback = (num: string): string | null => {
+            if (!Number.isNaN(parseInt(num)) || parseInt(num) > 59) {
+                const number = parseInt(num)
+                return number < 10 ? '0' + number : number.toString() ;
+            } else {
+                return null;
+            }
+        };
+
+        let splitTiming = timing.split(':').map((num) => checkTimingCallback(num));
+        if (splitTiming.length < 2) {
+            splitTiming = timing.split('.').map((num) => checkTimingCallback(num));
+        }
+        splitTiming.forEach((num) => {
+            if (num === null) {
+                return null;
+            }   
+        });
+
+        if (splitTiming.length === 2) {
+            return timing[0] + ':' + timing[1];
+        } else if (timing.length === 3) {
+            return timing[0] + ':' + timing[1] + ':' + timing[2];
+        }
+        return null;    
     }
 
     private static checkCategoryN(category: number): number | null {

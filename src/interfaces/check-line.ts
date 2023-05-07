@@ -1,5 +1,5 @@
 export default interface CheckLines {
-    timing: number[] | null;
+    timing: string | null;
     category: number | null;
     description?: string;
 }
