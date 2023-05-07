@@ -43,8 +43,6 @@ export default class InputChecker {
     static createCheckInput(input: string): CheckLines | null{
         const splitInput = input.trim().split(/ +/);
 
-        console.log(splitInput);
-
         if (splitInput.length >= 2) {
             const timing = this.buildTiming(splitInput[0]);
             let category: number | null;
@@ -82,8 +80,6 @@ export default class InputChecker {
 
         const convertedCategory = lowercaseString.replace(/[àâèéêù]/g, matched => accentMap.get(matched) || '');
 
-        console.log('cate : ' + convertedCategory);
-
         switch (convertedCategory) {
             case checkCategoriesString.Audio_Transition:
                 return checkCategoriesNumber.Audio_Transition;
@@ -115,7 +111,7 @@ export default class InputChecker {
     private static buildTiming(timing: string): string | null {
 
         const checkTimingCallback = (num: string): string | null => {
-            if (!Number.isNaN(parseInt(num)) || parseInt(num) > 59) {
+            if (!Number.isNaN(parseInt(num)) && parseInt(num) < 60) {
                 const number = parseInt(num)
                 return number < 10 ? '0' + number : number.toString() ;
             } else {
@@ -127,16 +123,25 @@ export default class InputChecker {
         if (splitTiming.length < 2) {
             splitTiming = timing.split('.').map((num) => checkTimingCallback(num));
         }
+
+        let isTimingValid = true;
         splitTiming.forEach((num) => {
             if (num === null) {
-                return null;
+                isTimingValid = false;
             }   
         });
 
-        if (splitTiming.length === 2) {
-            return timing[0] + ':' + timing[1];
-        } else if (timing.length === 3) {
-            return timing[0] + ':' + timing[1] + ':' + timing[2];
+        if (!isTimingValid) {
+            return null;
+        }
+
+        if (splitTiming.length === 1) {
+            return '00:00:' + splitTiming[0];
+        }
+        else if (splitTiming.length === 2) {
+            return '00:' + splitTiming[0] + ':' + splitTiming[1];
+        } else if (splitTiming.length === 3) {
+            return splitTiming[0] + ':' + splitTiming[1] + ':' + splitTiming[2];
         }
         return null;    
     }

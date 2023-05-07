@@ -34,26 +34,27 @@ const App = () => {
 
     const sendCheck = () => {
         console.log(validCheckLines);
-        // chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        //     const tab = tabs[0];
-        //     if (tab.id === undefined) return;
-        //     console.log(tab.url)
-        //     chrome.tabs.sendMessage(tab.id, { action: 'fillCheck', payload: validCheckLines }, function(response) {
-        //         console.log("reponse : " + JSON.stringify(response))
-        //         if (response.success) {
-        //             setSuccessMessages(`Check entré avec succès`);
-        //         } else {
-        //             setEntryError(true);
-        //             setErrorMessages(`Erreur lors de l'entrée du check\n ${response.msg}`);
-        //         }
-        //     });
-        // });
+        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+            const tab = tabs[0];
+            if (tab.id === undefined) return;
+            console.log(tab.url)
+            chrome.tabs.sendMessage(tab.id, { action: 'fillCheck', payload: validCheckLines }, function(response) {
+                console.log("reponse : " + JSON.stringify(response))
+                if (response.success) {
+                    setSuccessMessages(`Check entré avec succès`);
+                } else {
+                    setEntryError(true);
+                    setErrorMessages(`Erreur lors de l'entrée du check\n ${response.msg}`);
+                }
+            });
+        });
     }
 
     const performCheck = () => {
         console.log(validCheckLines);
+        let errorOccured = false;
+
         const lines = text.split('\n');
-        console.log(lines);
         if (lines.length === 0) {
             setEntryError(true);
             return;
@@ -69,13 +70,13 @@ const App = () => {
             if (checkLine) {
                 newValidLines.push(checkLine);
             } else {
+                errorOccured = true;
                 setEntryError(true);
                 setErrorMessages(`Erreur à la ligne ${index + 1}`);
-                console.log(`Erreur à la ligne ${index + 1}`);
                 break;
             }
         }
-        if (entryError) return;
+        if (errorOccured) return;
         
         setValidLines(newValidLines);
         setIsCheckValid(true);

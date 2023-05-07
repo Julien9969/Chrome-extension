@@ -16,7 +16,7 @@
 //   }
 // });
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(async function(request, sender, sendResponse) {
   console.log('fillCheck');
   if (request.action === 'fillCheck') {
     const checkLines = request.payload;
@@ -25,19 +25,53 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       sendResponse({success: false, msg: 'Vous n\'êtes pas sur une bonne page' });
       return;
     }
-    checkLines.forEach(() => {
+    checkLines.forEach(async () => {
       button[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     const linesList = document.getElementsByClassName('css-1inm7gi')[1].children as HTMLCollection;
 
+    let errorOccured = false;
     for (let index = 0; index < linesList.length; index++) {
       let line = linesList[index]; 
-      // Time input
-      (line.children[0].children[0].children[0].children[0] as HTMLInputElement).value = checkLines[index].time;
+      // timing input
+      // const pasteEvent = await createPasteEvent(checkLines[index].timing);
+      console.log(checkLines[index].timing);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // console.log(pasteEvent);
+      console.log(line.children[0].children[0].children[0].children);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      dispatchPasteEvent(line.children[0].children[0].children[0].children, checkLines[index].timing);
+
+      // if (pasteEvent !== null) {
+      // } else {
+      //   errorOccured = true;
+      // }
+      // category input
+
     }
   }
 });
+
+function dispatchPasteEvent(b: HTMLCollection, textData: string) {
+  let input = b[0];
+  if (input) {
+    let pasteEvent = new ClipboardEvent('paste', {
+      bubbles: true,
+      clipboardData: new DataTransfer()
+    });
+
+    (pasteEvent.clipboardData as any).setData('text/plain', textData);
+
+    input.dispatchEvent(pasteEvent);
+  } else {
+    setTimeout(() => dispatchPasteEvent(b, textData), 100);
+  }
+}
+
 
 // chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 //   if (msg.color) {
