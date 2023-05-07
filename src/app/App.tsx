@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
+import { Button } from "@mui/material";
 import "./App.css";
 
 const App = () => {
+    const [text, setText] = useState('');
+    let isCheckValid = false;
+    let entryError = false;
+
     const getbuttons = () => {
         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             const tab = tabs[0];
@@ -22,13 +27,30 @@ const App = () => {
         });
     }
 
+    const performCheck = () => {
+        const lines = text.split('\n');
+        console.log(lines);
+    }
+
+    const handleTextChange = (event: any) => {
+        setText(event.target.value);
+        const lines = text.split('\n');
+        console.log(lines);
+        isCheckValid = false;
+    }
+
     return (
         <div className="container flex-column">
-            <h1 id="title"> hello world </h1>
-            <button onClick={getbuttons}>get buttons</button>
+            <h1 id="title">Check TXT Converter</h1>
             <div id="text-container">
-                <textarea className="text-area" placeholder="Coller le check ici"></textarea>
+                <textarea value={text} onChange={handleTextChange} className="text-area" placeholder="Coller le check ici"></textarea>
             </div>
+            <div>
+                { entryError ? <p id="error-msg">TODO error messages</p> : null }
+
+            </div>
+            <Button variant="contained" onClick={performCheck}>Véfier</Button>
+            {/* <Button variant="contained" onClick={getbuttons}>get buttons</Button> */}
         </div>
     );
 }
