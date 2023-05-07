@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
+import InputChecker from "../check-input";
 import "./App.css";
+import  CheckLines from "../interfaces/check-line";
 
 const App = () => {
     const [text, setText] = useState('');
-    let isCheckValid = false;
-    let entryError = false;
+    const [errorMessages, setErrorMessages] = useState<string>('');
+    const [entryError, setEntryError] = useState(false);
+    const [validCheckLines, setValidLines] = useState<CheckLines[]>([]);
+    const [isCheckValid, setIsCheckValid] = useState(false);
 
     const getbuttons = () => {
         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
@@ -27,16 +31,46 @@ const App = () => {
         });
     }
 
+    const sendCheck = () => {
+        console.log(validCheckLines);
+    }
+
     const performCheck = () => {
+        console.log(validCheckLines);
         const lines = text.split('\n');
         console.log(lines);
+        if (lines.length === 0) {
+            setEntryError(true);
+            return;
+        }
+        const newValidLines: CheckLines[] = [];
+
+        for (let index = 0; index < lines.length; index++) {
+            const line = lines[index];
+            if(line === '' || line === '\n') continue;
+
+            const checkLine = InputChecker.createCheckInput(line);
+            
+            if (checkLine) {
+              console.log('ok');
+              newValidLines.push(checkLine);
+            } else {
+              setEntryError(true);
+              setErrorMessages(`Erreur à la ligne ${index + 1}`);
+              console.log(`Erreur à la ligne ${index + 1}`);
+              break;
+            }
+        }
+        if (entryError) return;
+        
+        setValidLines(newValidLines);
+        setIsCheckValid(true);
+        console.log(newValidLines);
     }
 
     const handleTextChange = (event: any) => {
         setText(event.target.value);
-        const lines = text.split('\n');
-        console.log(lines);
-        isCheckValid = false;
+        setIsCheckValid(false);
     }
 
     return (
@@ -46,11 +80,13 @@ const App = () => {
                 <textarea value={text} onChange={handleTextChange} className="text-area" placeholder="Coller le check ici"></textarea>
             </div>
             <div>
-                { entryError ? <p id="error-msg">TODO error messages</p> : null }
-
+                { entryError ? <p id="error-msg">{errorMessages}</p> : null }
+                { isCheckValid ? <p id="success-msg">Check valide</p> : null}
             </div>
-            <Button variant="contained" onClick={performCheck}>Véfier</Button>
-            {/* <Button variant="contained" onClick={getbuttons}>get buttons</Button> */}
+            { isCheckValid ?
+                <Button variant="contained" onClick={performCheck}>Véfier</Button>
+                : <Button variant="contained" onClick={sendCheck}>Convertir</Button> 
+            }
         </div>
     );
 }

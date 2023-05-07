@@ -54,3 +54,9 @@ html, body {
     margin: 5px 0 10px 0;
     padding: 0;
 }
+
+#success-msg {
+    color: rgb(34, 177, 34);
+    margin: 5px 0 10px 0;
+    padding: 0;
+}
