@@ -45,30 +45,30 @@ export default class InputChecker {
 
         if (splitInput.length >= 2) {
             const timing = this.buildTiming(splitInput[0]);
-            let category: number | null;
-            if (!Number.isNaN(parseInt(splitInput[1].trim()))) {
-                category = this.checkCategoryN(parseInt(splitInput[1].trim()));
-            } else {
-                category = this.checkCategoryS(splitInput[1].trim());
-                if (category === null) {
-                    category = this.checkCategoryS(splitInput[1].trim() + ' ' + splitInput[2].trim());
-                    splitInput.splice(2, 1);
-                }
-            }
+            // let category: number | null;
+            // if (!Number.isNaN(parseInt(splitInput[1].trim()))) {
+            //     category = this.checkCategoryN(parseInt(splitInput[1].trim()));
+            // } else {
+            //     category = this.checkCategoryS(splitInput[1].trim());
+            //     if (category === null) {
+            //         category = this.checkCategoryS(splitInput[1].trim() + ' ' + splitInput[2].trim());
+            //         splitInput.splice(2, 1);
+            //     }
+            // }
 
             let description: string | undefined;
             try {
-                if (splitInput.length > 3) {
-                    description = splitInput.slice(2).join(' ');
+                if (splitInput.length > 2) {
+                    description = splitInput.slice(1).join(' ');
                 } else {
-                    description = splitInput[2];
+                    description = splitInput[1];
                 }
             } catch {
                 description = '';
             }
-            console.log('timing : ' + timing + ' category : ' + category + ' description : ' + description);
-            if (timing && category) {
-                return { timing, category, description };
+            console.log('timing : ' + timing + ' category : ' + 0 + ' description : ' + description);
+            if (timing !== null) {
+                return { timing,  category: 0, description };
             }
         }
         return null;

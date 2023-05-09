@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
 
-  "name": "Chrome Extension TypeScript Starter",
-  "description": "Chrome Extension, TypeScript, Visual Studio Code",
+  "name": "Check txt vers site (timing et description))",
+  "description": "Rempli les champs timing et description avec les valeurs du txt, il faut selectionner la catégorie manuellement",
   "version": "1.0",
 
   "options_ui": {

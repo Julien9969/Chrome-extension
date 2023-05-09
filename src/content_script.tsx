@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender, sendRespons
 
     const linesList = document.getElementsByClassName('css-1inm7gi')[1].children as HTMLCollection;
     // while (linesList.length === 0) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 500));
     // }
     let number = linesList.length;
 
