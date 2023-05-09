@@ -40,7 +40,7 @@ const App = () => {
             console.log(tab.url)
             chrome.tabs.sendMessage(tab.id, { action: 'fillCheck', payload: validCheckLines }, function(response) {
                 console.log("reponse : " + JSON.stringify(response))
-                if (response.success) {
+                if (response && response.success) {
                     setSuccessMessages(`Check entré avec succès`);
                 } else {
                     setEntryError(true);

@@ -29,34 +29,46 @@ chrome.runtime.onMessage.addListener(async function(request, sender, sendRespons
       button[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
     const linesList = document.getElementsByClassName('css-1inm7gi')[1].children as HTMLCollection;
+    // while (linesList.length === 0) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    // }
+    let number = linesList.length;
 
-    let errorOccured = false;
-    for (let index = 0; index < linesList.length; index++) {
+    if (number !== checkLines.length) {
+      number = linesList.length - (linesList.length - checkLines.length);
+    }
+
+    console.log('number : ' + number);
+    console.log('linesList : ');
+    console.log(linesList);
+
+    for (let index = 0; index < number; index++) {
+      console.log('index : ' + index);
       let line = linesList[index]; 
       // timing input
-      // const pasteEvent = await createPasteEvent(checkLines[index].timing);
       console.log(checkLines[index].timing);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      while (!line || !line.children[0].children[0].children[0].children) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      console.log(line);
 
-      // console.log(pasteEvent);
       console.log(line.children[0].children[0].children[0].children);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      dispatchPasteEvent(line.children[0].children[0].children[0].children, checkLines[index].timing);
+      await dispatchPasteEvent(line.children[0].children[0].children[0].children, checkLines[index].timing);
 
-      // if (pasteEvent !== null) {
-      // } else {
-      //   errorOccured = true;
-      // }
+      // description input
+      console.log(checkLines[index].description);
+      console.log(line.children[1].children[0].children[0].children[0]);
+      (line.children[1].children[0].children[0].children[0] as HTMLTextAreaElement).value = checkLines[index].description ? checkLines[index].description : '';
+
       // category input
-
     }
+    console.log('Terminé avec succes');
+    sendResponse({ success: true, msg: 'Terminé avec succes' });
   }
 });
 
-function dispatchPasteEvent(b: HTMLCollection, textData: string) {
+async function dispatchPasteEvent(b: HTMLCollection, textData: string) {
   let input = b[0];
   if (input) {
     let pasteEvent = new ClipboardEvent('paste', {
@@ -72,7 +84,6 @@ function dispatchPasteEvent(b: HTMLCollection, textData: string) {
   }
 }
 
-
 // chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 //   if (msg.color) {
 //     console.log("Receive color = " + msg.color);
@@ -82,3 +93,5 @@ function dispatchPasteEvent(b: HTMLCollection, textData: string) {
 //     sendResponse("Color message is none.");
 //   }
 // });
+
+
