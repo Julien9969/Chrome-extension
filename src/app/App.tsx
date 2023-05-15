@@ -77,7 +77,7 @@ const App = () => {
     }
 
     const test = () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+                chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             const tab = tabs[0];
             if (tab.id === undefined) return;
             console.log(tab.url)
@@ -87,12 +87,22 @@ const App = () => {
                     setCheckerInfos(JSON.parse(response));
                 });
             } else {
-                setErrorMessages(`Ouvrir la page https://fankai.fr/checkers`);
+                console.log('Ouvrir la page https://fankai.fr/checkers');
+                timeoutError();
+                setErrorMessages('Ouvrir la page https://fankai.fr/checkers');
             }
+            return;
         });
 
         console.log(serieId);
         console.log(filmItem);
+    }
+
+    const timeoutError = () => {
+        setEntryError(true);
+        setTimeout(() => {
+            setEntryError(false);
+        }, 3000);
     }
 
     return (
