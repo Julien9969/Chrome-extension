@@ -1,36 +1,24 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
 import InputChecker from "../check-input";
+import SerieSelect from "../serie-select/serie-select";
+import FilmSelect from "../film-select/film-select";
 import "./App.css";
-import  CheckLines from "../interfaces/check-line";
+import  CheckLine from "../interfaces/check-line";
+import { FilmItem } from "../interfaces/film-item";
+import { CheckerInfos } from "../interfaces/checker-infos";
 
 const App = () => {
     const [text, setText] = useState('');
     const [errorMessages, setErrorMessages] = useState<string>('');
     const [successMessages, setSuccessMessages] = useState<string>('');
     const [entryError, setEntryError] = useState(false);
-    const [validCheckLines, setValidLines] = useState<CheckLines[]>([]);
+    const [validCheckLines, setValidLines] = useState<CheckLine[]>([]);
     const [isCheckValid, setIsCheckValid] = useState(false);
 
-    const getbuttons = () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-            const tab = tabs[0];
-            if (tab.id === undefined) return;
-            console.log(tab.url)
-            chrome.tabs.sendMessage(tab.id, { action: 'getButtonInfo' }, function(response) {
-                console.log("reponse : " + JSON.stringify(response))
-                
-                if (response && response.button) {
-                    // Do something with the button, e.g. add an event listener
-                    const button = response.button;
-                    console.log(button);
-                    // button[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-                } else {
-                    console.log('Button not found');
-                }
-            });
-        });
-    }
+    const [serieId, setSerieId] = useState<number>(-1);
+    const [filmItem, setFilmItem] = useState<FilmItem>(undefined as unknown as FilmItem);
+    const [checkerInfos, setCheckerInfos] = useState<CheckerInfos>(undefined as unknown as CheckerInfos);
 
     const sendCheck = () => {
         console.log(validCheckLines);
@@ -59,7 +47,7 @@ const App = () => {
             setEntryError(true);
             return;
         }
-        const newValidLines: CheckLines[] = [];
+        const newValidLines: CheckLine[] = [];
 
         for (let index = 0; index < lines.length; index++) {
             const line = lines[index];
@@ -88,6 +76,25 @@ const App = () => {
         setIsCheckValid(false);
     }
 
+    const test = () => {
+        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+            const tab = tabs[0];
+            if (tab.id === undefined) return;
+            console.log(tab.url)
+            if (tab.url === 'https://fankai.fr/checkers') {
+                chrome.tabs.sendMessage(tab.id, { action: 'getCheckerInfos' }, function(response) {
+                    console.log(JSON.parse(response))
+                    setCheckerInfos(JSON.parse(response));
+                });
+            } else {
+                setErrorMessages(`Ouvrir la page https://fankai.fr/checkers`);
+            }
+        });
+
+        console.log(serieId);
+        console.log(filmItem);
+    }
+
     return (
         <div className="container flex-column">
             <h1 id="title">Check TXT Converter</h1>
@@ -98,10 +105,15 @@ const App = () => {
                 { entryError ? <p id="error-msg">{errorMessages}</p> : null }
                 { isCheckValid ? <p id="success-msg">{successMessages}</p> : null}
             </div>
-            { !isCheckValid ?
-                <Button variant="contained" onClick={performCheck}>Véfier</Button>
-                : <Button variant="contained" onClick={sendCheck}>Convertir</Button> 
-            }
+            <div className="flex-row">
+                <SerieSelect setSerieCallback={(id: number) => { setSerieId(id) } } />
+                <FilmSelect setFilmCallback={(filmData: FilmItem) => {setFilmItem(filmData)} } serieId={serieId} disabled={serieId === -1} />
+                { !isCheckValid ?
+                    <Button variant="contained" onClick={performCheck}>Véfier</Button>
+                    : <Button variant="contained" onClick={sendCheck}>Convertir</Button> 
+                }
+                <Button variant="contained" onClick={test}>Test</Button>
+            </div>
         </div>
     );
 }

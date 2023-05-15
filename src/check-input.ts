@@ -1,4 +1,4 @@
-import CheckLines from "./interfaces/check-line";
+import CheckLine from "./interfaces/check-line";
 
 enum checkCategoriesNumber {
     Audio_Transition = 1,
@@ -40,11 +40,11 @@ const accentMap = new Map([
 
 export default class InputChecker {
 
-    static createCheckInput(input: string): CheckLines | null{
+    static createCheckInput(input: string): CheckLine | null{
         const splitInput = input.trim().split(/ +/);
 
         if (splitInput.length >= 2) {
-            const timing = this.buildTiming(splitInput[0]);
+            const timecode = this.buildTiming(splitInput[0]);
             let category: number | null;
             if (!Number.isNaN(parseInt(splitInput[1].trim()))) {
                 category = this.checkCategoryN(parseInt(splitInput[1].trim()));
@@ -66,9 +66,9 @@ export default class InputChecker {
             } catch {
                 description = '';
             }
-            console.log('timing : ' + timing + ' category : ' + category + ' description : ' + description);
-            if (timing && category) {
-                return { timing, category, description };
+            console.log('timing : ' + timecode + ' category : ' + category + ' description : ' + description);
+            if (timecode && category) {
+                return { timecode, category, description } as unknown as CheckLine;
             }
         }
         return null;

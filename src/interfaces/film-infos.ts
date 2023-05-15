@@ -1,0 +1,1 @@
+export interface filmInfos {id: number, name: string, number: number}
