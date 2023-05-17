@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Button, FormControlLabel, Switch } from "@mui/material";
 import InputChecker from "../check-input";
 import SerieSelect from "../serie-select/serie-select";
 import FilmSelect from "../film-select/film-select";
@@ -7,6 +7,7 @@ import "./App.css";
 import  CheckLine from "../interfaces/check-line";
 import { FilmItem } from "../interfaces/film-item";
 import { CheckerInfos } from "../interfaces/checker-infos";
+import { CheckStructure } from "../interfaces/check-structure";
 
 const App = () => {
     const [text, setText] = useState('');
@@ -19,23 +20,46 @@ const App = () => {
     const [serieId, setSerieId] = useState<number>(-1);
     const [filmItem, setFilmItem] = useState<FilmItem>(undefined as unknown as FilmItem);
     const [checkerInfos, setCheckerInfos] = useState<CheckerInfos>(undefined as unknown as CheckerInfos);
+    const [language, setLanguage] = useState('VOSTFR');
 
     const sendCheck = () => {
-        console.log(validCheckLines);
-        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-            const tab = tabs[0];
-            if (tab.id === undefined) return;
-            console.log(tab.url)
-            chrome.tabs.sendMessage(tab.id, { action: 'fillCheck', payload: validCheckLines }, function(response) {
-                console.log("reponse : " + JSON.stringify(response))
-                if (response && response.success) {
-                    setSuccessMessages(`Check entré avec succès`);
-                } else {
-                    setEntryError(true);
-                    setErrorMessages(`Erreur lors de l'entrée du check\n ${response.msg}`);
-                }
-            });
-        });
+        
+        if (!filmItem || !checkerInfos || !serieId) {
+            timeoutError();
+            setErrorMessages(`Selectionnez une série et un film`);
+            return;
+        }
+        const check: CheckStructure = {
+            data: validCheckLines,
+            idCheck: null,
+            idFilm: filmItem.id,
+            idSerie: serieId,
+            idUser: checkerInfos.id.toString(),
+            isDraft: true,
+            lang: language,
+            nameFilm: filmItem.name,
+            nameSerie: filmItem.serieName,
+            nameUser: checkerInfos.name,
+            numberFilm: filmItem.number,
+        }
+
+        
+        fetch('https://fankai.fr/api/checks/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain;charset=UTF-8',
+                'Accept': '*/*',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+                'Connection': 'keep-alive',
+                'Host': 'fankai.fr',
+                'Origin': 'https://fankai.fr',
+                'Referer': 'https://fankai.fr/checkers',
+            },
+            body: JSON.stringify(check)
+        })
+        .then(response => {setSuccessMessages(`Check envoyé`)})
+        .catch(error => {timeoutError(); setErrorMessages(`Erreur lors de l'envoi du check`)});
     }
 
     const performCheck = () => {
@@ -59,7 +83,7 @@ const App = () => {
                 newValidLines.push(checkLine);
             } else {
                 errorOccured = true;
-                setEntryError(true);
+                timeoutError();
                 setErrorMessages(`Erreur à la ligne ${index + 1}`);
                 break;
             }
@@ -76,27 +100,29 @@ const App = () => {
         setIsCheckValid(false);
     }
 
-    const test = () => {
-                chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    useEffect(() => {
+        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             const tab = tabs[0];
             if (tab.id === undefined) return;
-            console.log(tab.url)
+            // console.log(tab.url)
             if (tab.url === 'https://fankai.fr/checkers') {
                 chrome.tabs.sendMessage(tab.id, { action: 'getCheckerInfos' }, function(response) {
-                    console.log(JSON.parse(response))
+                    // console.log(JSON.parse(response))
                     setCheckerInfos(JSON.parse(response));
                 });
             } else {
-                console.log('Ouvrir la page https://fankai.fr/checkers');
                 timeoutError();
                 setErrorMessages('Ouvrir la page https://fankai.fr/checkers');
             }
             return;
         });
+    }, []);
 
-        console.log(serieId);
-        console.log(filmItem);
-    }
+    const handleSwitchChange = (event: any) => {
+        const isChecked = event.target.checked;
+        const newLanguage = isChecked ? 'VF' : 'VOSTFR';
+        setLanguage(newLanguage);
+    };
 
     const timeoutError = () => {
         setEntryError(true);
@@ -116,13 +142,22 @@ const App = () => {
                 { isCheckValid ? <p id="success-msg">{successMessages}</p> : null}
             </div>
             <div className="flex-row">
-                <SerieSelect setSerieCallback={(id: number) => { setSerieId(id) } } />
-                <FilmSelect setFilmCallback={(filmData: FilmItem) => {setFilmItem(filmData)} } serieId={serieId} disabled={serieId === -1} />
+                <div id="serie-select">
+                    <SerieSelect setSerieCallback={(id: number) => { setSerieId(id) } } />
+                </div>
+                <div id="film-select">
+                    <FilmSelect setFilmCallback={(filmData: FilmItem) => {setFilmItem(filmData)} } serieId={serieId} disabled={serieId === -1} />
+                </div>
+                <FormControlLabel
+                    value="bottom"
+                    control={<Switch color="primary" onChange={handleSwitchChange} />}
+                    label={language}
+                    labelPlacement="bottom"
+                />
                 { !isCheckValid ?
-                    <Button variant="contained" onClick={performCheck}>Véfier</Button>
-                    : <Button variant="contained" onClick={sendCheck}>Convertir</Button> 
+                    <Button variant="contained" onClick={performCheck}>Vérifier</Button>
+                    : <Button variant="contained" onClick={sendCheck}>Envoyer</Button> 
                 }
-                <Button variant="contained" onClick={test}>Test</Button>
             </div>
         </div>
     );

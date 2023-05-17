@@ -67,3 +67,11 @@ html, body {
     margin: 5px 0 10px 0;
     padding: 0;
 }
+
+#serie-select {
+    margin: 0 10px 0 10px;
+}
+
+#film-select {
+    margin: 0 10px 0 10px;
+}

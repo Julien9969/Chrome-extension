@@ -1,0 +1,55 @@
+Check txt vers site
+
+Installation (ne fonctionne pas sur firefox)
+1 - dézipper le dossier
+2 - Ouvrir chrome > trois point en haut a droite > Extensions > Gérer les extensions.
+3 - En haut à droite activer le mode développeur
+4 - En haut à gauche, Charger l'extension non empaquetée
+5 - Sélectionner le dossier à l'intérieur du dossier extrait après le zip (check to site) 
+6 - C'est bon elle devrait apparaître en haut à droite (aligné avec la barre de recherche) si c'est pas le cas il faut cliquer sur le logo puzzle au même endroit.
+
+Utilisation
+1 - Aller sur le site sur la page de check (https://fankai.fr/checkers)
+2 - Ouvrir l'extension et coller les lignes du check
+3 - Cliquez sur Vérifier
+4 - Si c'est valide, cliquez sur Envoyer pour sauvegarder le check en brouillon
+Note: L'extension ne permet pas de modifier un check déjà sauvegardé, il faut le supprimer et le recréer.
+
+Les formats à respecter pour les lignes de check sont:
+- H.m.s catégorie
+- H:m:s catégorie texte 
+Mettre uniquement les minutes et secondes ou secondes devrait fonctionner aussi (m.s ou s)
+
+╔═════════════════════════════╦═══════════════════════════════════════════════════════════════════╗
+║      Catégories du site     ║            Nom de catégorie utilisable dans les checks            ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║      Audio - Transition     ║               1, "transition audio", "transi audio"               ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║     Audio - Son Parasite    ║                         2, "son parasite"                         ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║      Vidéo - Transition     ║               3, "transition video", "transi video"               ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║      Vidéo - Fondu noir     ║                      4, "fondu noir", "fondu"                     ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║  Vidéo - Image subliminale  ║       5, "image subliminale", "image subli", "italique sub"       ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║         Sub - Timing        ║              6, "sub timing", "timing", "timing sub"              ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║        Sub - Manquant       ║                  7, "sub manquant", "manque sub"                  ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║       Sub - Traduction      ║             8, "trad", "traduction", "sub traduction"             ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║      Sub - Orthographe      ║           10, "orthographe", "ortho", "sub orthographe"           ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║        Sub - Italique       ║               11, "italique", "ita", "sub italique"               ║
+╠═════════════════════════════╬═══════════════════════════════════════════════════════════════════╣
+║            Autre            ║                            12, "autre"                            ║
+╚═════════════════════════════╩═══════════════════════════════════════════════════════════════════╝
+note: Les catégories ne sont pas sensibles aux accents ni à la casse, vous pouvez écrire en majuscule ou minuscule et avec ou sans accents.
+
+Exemples de lignes valides.
+00:00:00 transition audio ceci est un commentaire
+01.01.01 5 ceci est un commentaire (catégorie 5 = image subliminale)
+1:1 trad ceci est un commentaire
+1:1:1 sub manquant
+01 image subliminale

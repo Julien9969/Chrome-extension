@@ -1,8 +1,8 @@
 import CheckLine from "./check-line";
 
 export interface CheckStructure {
-    data: [CheckLine],
-    idCheck: number,
+    data: CheckLine[],
+    idCheck: number | null,
     idFilm: number,
     idSerie: number,
     idUser: string,

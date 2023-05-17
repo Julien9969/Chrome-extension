@@ -8,6 +8,7 @@ import './film-select.css';
 import { SerieItem } from '../interfaces/SerieList';
 import { SerieInfos } from '../interfaces/serie-infos';
 import { FilmItem } from '../interfaces/film-item';
+import { filmInfos } from '../interfaces/film-infos';
 
 export default function FilmSelect(props: FilmSelectProps) {
   const [filmData, setFilmData] = React.useState<string>("");
@@ -18,7 +19,7 @@ export default function FilmSelect(props: FilmSelectProps) {
     setFilmData(event.target.value);
     const item = JSON.parse(event.target.value);
 
-    const filmData: FilmItem = { id: item.id , name: item.name, number: item.number };
+    const filmData: FilmItem = { serieName: serieInfos.name, id: item.id , name: item.name, number: item.number };
     props.setFilmCallback(filmData);
   };
 
@@ -42,7 +43,7 @@ export default function FilmSelect(props: FilmSelectProps) {
         >
         {
           serieInfos.episodes && serieInfos.episodes.length > 0
-            ? serieInfos.episodes.map((item: FilmItem) => (
+            ? serieInfos.episodes.map((item: filmInfos) => (
                 <MenuItem key={item.id} value={JSON.stringify(item)}>
                   {item.name}
                 </MenuItem>

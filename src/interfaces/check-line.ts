@@ -1,5 +1,5 @@
 export default interface CheckLine {
-    idContent: number,
+    idContent?: number,
     idCategory: number,
     timecode: string,
     comment: string
