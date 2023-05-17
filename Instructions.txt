@@ -1,6 +1,6 @@
 Check txt vers site
 
-Installation (ne fonctionne pas sur firefox)
+Installation Chrome et Edge (fonctionne pas sur firefox)
 1 - dézipper le dossier
 2 - Ouvrir chrome > trois point en haut a droite > Extensions > Gérer les extensions.
 3 - En haut à droite activer le mode développeur
