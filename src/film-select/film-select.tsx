@@ -45,7 +45,7 @@ export default function FilmSelect(props: FilmSelectProps) {
           serieInfos.episodes && serieInfos.episodes.length > 0
             ? serieInfos.episodes.map((item: filmInfos) => (
                 <MenuItem key={item.id} value={JSON.stringify(item)}>
-                  {item.name}
+                 {item.number} - {item.name}
                 </MenuItem>
               ))
             : props.serieId === -1 ?  <MenuItem key={-1} value={0}>Sélectionner un série avant </MenuItem> :  <MenuItem key={-1} value={0}>Chargement...</MenuItem>

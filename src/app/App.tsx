@@ -24,11 +24,16 @@ const App = () => {
 
     const sendCheck = () => {
         
+        console.log(filmItem);
+        console.log(checkerInfos);
+        console.log(serieId);
+
         if (!filmItem || !checkerInfos || !serieId) {
             timeoutError();
             setErrorMessages(`Selectionnez une série et un film`);
             return;
         }
+
         const check: CheckStructure = {
             data: validCheckLines,
             idCheck: null,

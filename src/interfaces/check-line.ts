@@ -3,4 +3,5 @@ export default interface CheckLine {
     idCategory: number,
     timecode: string,
     comment: string
+    timecodeNew: boolean,
 }

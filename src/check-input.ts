@@ -75,7 +75,7 @@ export default class InputChecker {
 
             console.log('timing : ' + timecode + ' category : ' + idCategory + ' description : ' + comment);
             if (timecode && idCategory) {
-                return { timecode, idCategory, comment };
+                return { timecode, idCategory, comment, timecodeNew: true };
             }
         }
         return null;
